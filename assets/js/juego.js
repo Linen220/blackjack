@@ -1,5 +1,5 @@
 
-//! Patron modulo
+//! Patrón módulo
 //? Permite encapsular nuetro código, y asi podemos proteger nnuestro código.
 //? Ingresamos nuestro código dentro de una función anónima, y dentro de la 
 //? función agregamos tambien 'use strict'.
