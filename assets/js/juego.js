@@ -5,9 +5,13 @@
 //? función agregamos tambien 'use strict'.
 
 
-//* Función anonima autoinvocada '()'.
-(() => {
-    'use strict'
+
+
+//* Al asignale un nombre a la función anonima, podremos llamarla desde afuera, desde
+//* la consola por ejemplo.
+//? Función anonima autoinvocada '()'.
+const miModulo = (() => {
+    'use strict';
 
     let deck         = [];
     const tipos      = ['C', 'D', 'H', 'S'],
@@ -25,13 +29,20 @@
 
 
     //* Esta función inicializa el juego
+    //? Desde ES6 es posible usar parámetros por defecto 
+    //? (siempre y cuando sean los últimos declarados en la función).
     const inicializarJuego = ( numJugadores = 2) => { 
         deck = crearDeck(); 
+        puntosJugadores = [];
         for (let i = 0; i < numJugadores; i++) {
             puntosJugadores.push(0);
         }
 
-        console.log({puntosJugadores});
+        puntosHTML.forEach( e => e.innerText = 0);
+        divCartasJugadores.forEach( e => e.innerHTML = '');
+
+        btnPedir.disabled   = false;
+        btnDetener.disabled = false;
     };
 
     //* Esta función crea un nuevo deck
@@ -81,6 +92,25 @@
         divCartasJugadores[turno].append( imgCarta );
     }
 
+    //* Determina el ganador
+    const determinarGanador = () => {
+
+        //? Desestructuración de arreglos
+        const [ puntosMinimos, puntosComputadora ] = puntosJugadores;
+
+        setTimeout(() => {
+            if ( puntosComputadora === puntosMinimos) {
+                alert('Nadie ganó :(');
+            } else if ( puntosMinimos > 21 ) {
+                alert('Ganó la computadora');
+            } else if ( puntosComputadora > 21) {
+                alert('Ganaste');
+            } else {
+                alert('Ganó la computadora');
+            }
+        }, 100 );
+    }
+
     //* Turno de la computadora
     const turnoComputadora = ( puntosMinimos ) => {
         
@@ -97,19 +127,8 @@
 
         } while ( (puntosComputadora < puntosMinimos) && (puntosMinimos <= 21) );
         
-        setTimeout(() => {
-            if ( puntosComputadora === puntosMinimos) {
-                alert('Nadie ganó :(');
-            } else if ( puntosMinimos > 21 ) {
-                alert('Ganó la computadora');
-            } else if ( puntosComputadora > 21) {
-                alert('Ganaste');
-            } else {
-                alert('Ganó la computadora');
-            }
-        }, 100 );
+        determinarGanador();
     }
-
 
     btnPedir.addEventListener('click', () => {
         const carta = pedirCarta();
@@ -134,22 +153,19 @@
     btnDetener.addEventListener('click', () => {
         btnPedir.disabled   = true;
         btnDetener.disabled = true;
-        turnoComputadora( puntosJugador );
+        turnoComputadora( puntosJugadores[0] );
     });
 
+    //* No es necesario sin en el index ya lo estamos ejecutando.
+    // btnNuevo.addEventListener('click', () => {
+    //     inicializarJuego();
+    // });
 
-    btnNuevo.addEventListener('click', () => {
-        console.clear();
-        inicializarJuego();
 
-        // puntosHTML[0].innerText = 0;
-        // puntosHTML[1].innerText = 0;
-
-        // divCartasJugador.innerHTML = '';
-        // divCartasComputadora.innerHTML = '';
-
-        // btnPedir.disabled   = false;
-        // btnDetener.disabled = false;
-    });
-
+    //* Unicamente lo que se retorne va ser público y visible afuera de este modulo
+    //* y todo lo demas sera privado ( inaccesible ).
+    //? En este caso solo sera accesible la función inicializarJuego, sin los ().
+    return {
+        nuevoJuego: inicializarJuego
+    };
 })();
